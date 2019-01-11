@@ -34,7 +34,6 @@ if (isset($_POST["import"]))
                 if(isset($Row[0])) {
                     $name = mysqli_real_escape_string($conn,$Row[0]);
                 }
-                print($name);
                 $description = "";
                 if(isset($Row[1])) {
                     $description = mysqli_real_escape_string($conn,$Row[1]);
@@ -42,7 +41,6 @@ if (isset($_POST["import"]))
                 
                 if (!empty($name) || !empty($description)) {
                     $query = "insert into tbl_info (name,description) values ('".$name."','".$description."')";
-                    print($query);
                     $result = mysqli_query($conn, $query);
                 
                     if (! empty($result)) {
@@ -104,10 +102,10 @@ $data_array =  array(
 );
 
 
-$make_call = callAPI('POST', 'http://train.enam.gov.in/NamWebSrv/rest/assaying/getAssayingParamDtl', json_encode($data_array));
+// $make_call = callAPI('POST', 'http://train.enam.gov.in/NamWebSrv/rest/assaying/getAssayingParamDtl', json_encode($data_array));
 $response = json_decode($make_call, true);
-echo '<pre>';
-print_r($response);die;
+// echo '<pre>';
+// print_r($response);die;
 ?>
 
 <!DOCTYPE html>
@@ -196,6 +194,7 @@ div#response.display-block {
             </div>
         
         </form>
+        <button onclick="test()">request data</button>
         
     </div>
     <div id="response" class="<?php if(!empty($type)) { echo $type . " display-block"; } ?>"><?php if(!empty($message)) { echo $message; } ?></div>
@@ -235,4 +234,52 @@ if (mysqli_num_rows($result) > 0)
 ?>
 
 </body>
+<script type="text/javascript">
+// function loadXMLDoc() {
+//     var xmlhttp = new XMLHttpRequest();
+
+//     xmlhttp.onreadystatechange = function() {
+//         if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+//            if (xmlhttp.status == 200) {
+//                document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
+//            }
+//            else if (xmlhttp.status == 400) {
+//               alert('There was an error 400');
+//            }
+//            else {
+//                alert('something else other than 200 was returned');
+//            }
+//         }
+//     };
+
+//     xmlhttp.open("GET", "ajax_info.txt", true);
+//     xmlhttp.send();
+// }
+
+
+
+function test(){
+var url = 'http://train.enam.gov.in/NamWebSrv/rest/assaying/getAssayingParamDtl';
+var data = {
+        prodId: '2016070011220000103',
+        orgId: '1'
+    };
+const toUrlEncoded = obj => Object.keys(obj).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(obj[k])).join('&');
+
+fetch(url, {
+  method: 'POST', // or 'PUT'
+  body: toUrlEncoded(data), // data can be `string` or {object}!
+  headers:{
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+}).then(res => res.json())
+.then(response => console.log('Success:', JSON.stringify(response)))
+.catch(error => console.error('Error:', error));
+}
+
+
+
+
+
+</script>
 </html>
