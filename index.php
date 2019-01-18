@@ -1,10 +1,4 @@
 <?php
-// $conn = mysqli_connect("localhost","root","","test");
-// if( mysqli_connect_errno() ) {
-//     echo mysqli_connect_error();
-// } else {
-//     echo('connected to db...<br /><br />');
-// }
 require_once('vendor/php-excel-reader/excel_reader2.php');
 require_once('vendor/SpreadsheetReader.php');
 
@@ -45,29 +39,23 @@ if (isset($_POST["import"]))
                 $name = "";
                 $sr_no = 0;
                 if(isset($Row[8])) {
-                    // $name = mysqli_real_escape_string($conn,$Row[0]);
-                    if($Row['8'] != 'Moisture %'){
-                        $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016070011490000073","qtyUomId":"2016070011220000103","prodId":"2016070011220000103","type":"N","nValue":"'.$Row[8].'","maxVal":"7.50","minVal":"0.00"},';
+                    if(strtoupper($Row[2]) == 'MUSTARDS'){
+                        // $name = mysqli_real_escape_string($conn,$Row[0]);
+                        if($Row['8'] != 'Moisture %'){
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016070011490000073","qtyUomId":"2016070011220000103","prodId":"2016070011220000103","type":"N","nValue":"'.$Row[8].'","maxVal":"7.50","minVal":"0.00"},';
+                        }elseif($Row['8'] != 'Oil As is %'){
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016070011490000093","qtyUomId":"2016070011220000103","prodId":"2016070011220000103","type":"N","nValue":"'.$Row[8].'","maxVal":"100.00","minVal":"36.00"},';
+                        }
+                    }
+                    elseif (strtolower($Row[2]) == 'soybeans') {
+                        if($Row['8'] != 'Moisture %'){
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016110011490000067","qtyUomId":"2016070011220000103","prodId":"2016080011220000021","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
+                        }elseif($Row['8'] != 'Oil As is %'){
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016110011490000073","qtyUomId":"2016070011220000103","prodId":"2016080011220000021","type":"N","nValue":"'.$Row[8].'","maxVal":"50.00","minVal":"15.00"},';
+                        }
                     }
                 }
                 $sr_no +=1;
-                // $description = "";
-                // if(isset($Row[1])) {
-                //     $description = mysqli_real_escape_string($conn,$Row[1]);
-                // }
-                
-                // if (!empty($name) || !empty($description)) {
-                //     $query = "insert into tbl_info (name,description) values ('".$name."','".$description."')";
-                //     $result = mysqli_query($conn, $query);
-                
-                //     if (! empty($result)) {
-                //         $type = "success";
-                //         $message = "Excel Data Imported into the Database";
-                //     } else {
-                //         $type = "error";
-                //         $message = "Problem in Importing Excel Data";
-                //     }
-                // }
              }
         
          }
@@ -128,7 +116,6 @@ $data_array =  array(
      'orgId'=>'1'
 );
 $sr=1;
-// [{srNo:1,paramId:2016120011490000128,qtyUomId:2016040220980000001,prodId:2016040291220000007,type:N,nValue:5,maxVal:5.00,minVal:0.00}]
 $data_array = http_build_query($data_array,'','&');
 $data_array .= '[{srNo'.$sr.'';
 
@@ -210,7 +197,7 @@ div#response.display-block {
 </head>
 
 <body>
-    <h2>Import Excel File into MySQL Database using PHP</h2>
+    <h2>Import Excel File into ENAM.GOV.IN</h2>
     
     <div class="outer-container">
         <form action="" method="post"
@@ -230,63 +217,10 @@ div#response.display-block {
     </div>
     <div id="response" class="<?php if(!empty($type)) { echo $type . " display-block"; } ?>"><?php if(!empty($message)) { echo $message; } ?></div>
     
-         
-<!-- <?php
-    $sqlSelect = "SELECT * FROM tbl_info";
-    $result = mysqli_query($conn, $sqlSelect);
 
-if (mysqli_num_rows($result) > 0)
-{
-?>
-        
-    <table class='tutorial-table'>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-
-            </tr>
-        </thead>
-<?php
-    while ($row = mysqli_fetch_array($result)) {
-?>                  
-        <tbody>
-        <tr>
-            <td><?php  echo $row['name']; ?></td>
-            <td><?php  echo $row['description']; ?></td>
-        </tr>
-<?php
-    }
-?>
-        </tbody>
-    </table>
-<?php 
-} 
-?> -->
 
 </body>
 <script type="text/javascript">
-// function loadXMLDoc() {
-//     var xmlhttp = new XMLHttpRequest();
-
-//     xmlhttp.onreadystatechange = function() {
-//         if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-//            if (xmlhttp.status == 200) {
-//                document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
-//            }
-//            else if (xmlhttp.status == 400) {
-//               alert('There was an error 400');
-//            }
-//            else {
-//                alert('something else other than 200 was returned');
-//            }
-//         }
-//     };
-
-//     xmlhttp.open("GET", "ajax_info.txt", true);
-//     xmlhttp.send();
-// }
-
 
 
 function test(){
