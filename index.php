@@ -1,10 +1,10 @@
 <?php
-$conn = mysqli_connect("localhost","root","","test");
-if( mysqli_connect_errno() ) {
-    echo mysqli_connect_error();
-} else {
-    echo('connected to db...<br /><br />');
-}
+// $conn = mysqli_connect("localhost","root","","test");
+// if( mysqli_connect_errno() ) {
+//     echo mysqli_connect_error();
+// } else {
+//     echo('connected to db...<br /><br />');
+// }
 require_once('vendor/php-excel-reader/excel_reader2.php');
 require_once('vendor/SpreadsheetReader.php');
 
@@ -20,40 +20,67 @@ if (isset($_POST["import"]))
         move_uploaded_file($_FILES['file']['tmp_name'], $targetPath);
         
         $Reader = new SpreadsheetReader($targetPath);
+        $saving_data = array(
+            'loginId'=>'HYDENTRY',
+            'password'=>'PASSWORD',
+            'orgId'=>'1',
+            'oprId'=>'49',
+            'lotId'=>'492017111332',
+            'sampleId'=>'1'
+        );
+        $saving_data = http_build_query($saving_data,'','&');
         
         $sheetCount = count($Reader->sheets());
+        $saving_data .= '&dtlList:[';
         for($i=0;$i<$sheetCount;$i++)
         {
-            
+            // [{srNo:1,paramId:2016120011490000128,qtyUomId:2016040220980000001,prodId:2016040291220000007,type:N,nValue:5,maxVal:5.00,minVal:0.00}]
+
             $Reader->ChangeSheet($i);
-            
+            print(count($Reader));
             foreach ($Reader as $Row)
             {
+                // for Moisture
           
                 $name = "";
-                if(isset($Row[0])) {
-                    $name = mysqli_real_escape_string($conn,$Row[0]);
-                }
-                $description = "";
-                if(isset($Row[1])) {
-                    $description = mysqli_real_escape_string($conn,$Row[1]);
-                }
-                
-                if (!empty($name) || !empty($description)) {
-                    $query = "insert into tbl_info (name,description) values ('".$name."','".$description."')";
-                    $result = mysqli_query($conn, $query);
-                
-                    if (! empty($result)) {
-                        $type = "success";
-                        $message = "Excel Data Imported into the Database";
-                    } else {
-                        $type = "error";
-                        $message = "Problem in Importing Excel Data";
+                $sr_no = 0;
+                if(isset($Row[8])) {
+                    // $name = mysqli_real_escape_string($conn,$Row[0]);
+                    if($Row['8'] != 'Moisture %'){
+                        $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016070011490000073","qtyUomId":"2016070011220000103","prodId":"2016070011220000103","type":"N","nValue":"'.$Row[8].'","maxVal":"7.50","minVal":"0.00"},';
                     }
                 }
+                $sr_no +=1;
+                // $description = "";
+                // if(isset($Row[1])) {
+                //     $description = mysqli_real_escape_string($conn,$Row[1]);
+                // }
+                
+                // if (!empty($name) || !empty($description)) {
+                //     $query = "insert into tbl_info (name,description) values ('".$name."','".$description."')";
+                //     $result = mysqli_query($conn, $query);
+                
+                //     if (! empty($result)) {
+                //         $type = "success";
+                //         $message = "Excel Data Imported into the Database";
+                //     } else {
+                //         $type = "error";
+                //         $message = "Problem in Importing Excel Data";
+                //     }
+                // }
              }
         
          }
+         $saving_data .= ']';
+
+                print($saving_data);
+                echo 'saving data \n';
+         $make_call = callAPI('POST', 'http://train.enam.gov.in/NamWebSrv/rest/assaying/getAssayingParamDtl', $saving_data);
+        // $response = json_decode($make_call, true);
+        echo 'Nikhil';
+        echo '<pre>';
+        // print_r($response);
+        die;
   }
   else
   { 
@@ -100,10 +127,14 @@ $data_array =  array(
      'prodId'=>'2016070011220000103',
      'orgId'=>'1'
 );
+$sr=1;
+// [{srNo:1,paramId:2016120011490000128,qtyUomId:2016040220980000001,prodId:2016040291220000007,type:N,nValue:5,maxVal:5.00,minVal:0.00}]
+$data_array = http_build_query($data_array,'','&');
+$data_array .= '[{srNo'.$sr.'';
 
 
-// $make_call = callAPI('POST', 'http://train.enam.gov.in/NamWebSrv/rest/assaying/getAssayingParamDtl', json_encode($data_array));
-$response = json_decode($make_call, true);
+// $make_call = callAPI('POST', 'http://train.enam.gov.in/NamWebSrv/rest/assaying/getAssayingParamDtl', $data_array);
+// $response = json_decode($make_call, true);
 // echo '<pre>';
 // print_r($response);die;
 ?>
@@ -200,7 +231,7 @@ div#response.display-block {
     <div id="response" class="<?php if(!empty($type)) { echo $type . " display-block"; } ?>"><?php if(!empty($message)) { echo $message; } ?></div>
     
          
-<?php
+<!-- <?php
     $sqlSelect = "SELECT * FROM tbl_info";
     $result = mysqli_query($conn, $sqlSelect);
 
@@ -231,7 +262,7 @@ if (mysqli_num_rows($result) > 0)
     </table>
 <?php 
 } 
-?>
+?> -->
 
 </body>
 <script type="text/javascript">
