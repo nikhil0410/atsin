@@ -6,77 +6,79 @@ error_reporting(0);
 <!DOCTYPE html>
 <html>    
 <head>
-<style>    
-body {
-	font-family: Arial;
-	width: 550px;
-}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    
+        <style>    
+        body {
+        	font-family: Arial;
+        	width: 550px;
+        }
 
 
-.outer-container {
-	background: #F0F0F0;
-	border: #e0dfdf 1px solid;
-	padding: 40px 20px;
-	border-radius: 2px;
-}
+        .outer-container {
+        	background: #F0F0F0;
+        	border: #e0dfdf 1px solid;
+        	padding: 40px 20px;
+        	border-radius: 2px;
+        }
 
-.btn-submit {
-	background: #333;
-	border: #1d1d1d 1px solid;
-    border-radius: 2px;
-	color: #f0f0f0;
-	cursor: pointer;
-    padding: 5px 20px;
-    font-size:0.9em;
-}
+        .btn-submit {
+        	background: #333;
+        	border: #1d1d1d 1px solid;
+            border-radius: 2px;
+        	color: #f0f0f0;
+        	cursor: pointer;
+            padding: 5px 20px;
+            font-size:0.9em;
+        }
 
-.tutorial-table {
-    margin-top: 40px;
-    font-size: 0.8em;
-	border-collapse: collapse;
-	width: 100%;
-}
+        .tutorial-table {
+            margin-top: 40px;
+            font-size: 0.8em;
+        	border-collapse: collapse;
+        	width: 100%;
+        }
 
-.tutorial-table th {
-    background: #f0f0f0;
-    border-bottom: 1px solid #dddddd;
-	padding: 8px;
-	text-align: left;
-}
+        .tutorial-table th {
+            background: #f0f0f0;
+            border-bottom: 1px solid #dddddd;
+        	padding: 8px;
+        	text-align: left;
+        }
 
-.tutorial-table td {
-    background: #FFF;
-	border-bottom: 1px solid #dddddd;
-	padding: 8px;
-	text-align: left;
-}
+        .tutorial-table td {
+            background: #FFF;
+        	border-bottom: 1px solid #dddddd;
+        	padding: 8px;
+        	text-align: left;
+        }
 
-#response {
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 2px;
-    display:none;
-}
+        #response {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 2px;
+            display:none;
+        }
 
-.success {
-    background: #c7efd9;
-    border: #bbe2cd 1px solid;
-}
+        .success {
+            background: #c7efd9;
+            border: #bbe2cd 1px solid;
+        }
 
-.error {
-    background: #fbcfcf;
-    border: #f3c6c7 1px solid;
-}
+        .error {
+            background: #fbcfcf;
+            border: #f3c6c7 1px solid;
+        }
 
-.tg  {border-collapse:collapse;border-spacing:0;border-color:#999;margin:0px auto;}
-.tg td{font-family:Arial, sans-serif;font-size:14px;padding:4px 19px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#444;background-color:#F7FDFA;}
-.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:4px 19px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#fff;background-color:#26ADE4;}
-.tg .tg-0lax{text-align:left;vertical-align:top}
+        .tg  {border-collapse:collapse;border-spacing:0;border-color:#999;margin:0px auto;}
+        .tg td{font-family:Arial, sans-serif;font-size:14px;padding:4px 19px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#444;background-color:#F7FDFA;}
+        .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:4px 19px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#999;color:#fff;background-color:#26ADE4;}
+        .tg .tg-0lax{text-align:left;vertical-align:top}
 
-div#response.display-block {
-    display: block;
-}
-</style>
+        div#response.display-block {
+            display: block;
+        }
+        </style>
 </head>
 
 <body>
@@ -85,16 +87,13 @@ div#response.display-block {
     <div class="outer-container">
         <form action="" method="post" name="frmExcelImport" id="frmExcelImport" enctype="multipart/form-data">
             <div>
-                <label>Choose Excel
-                    File</label> <input type="file" name="file"
-                    id="file" accept=".xls,.xlsx">
-                <button type="submit" name="import"
-                    class="btn-submit">Upload to ENAM</button>
+                <label>Choose Excel File</label> <input type="file" name="file"id="file" accept=".xls,.xlsx">
+                <button type="submit" name="import" class="btn-submit">Upload to ENAM</button>
         
             </div>
         
         </form>
-        <button onclick="test()">request data</button>
+        <!-- <button onclick="test()">request data</button> -->
         
     </div>
     <div id="response" class="<?php if(!empty($type)) { echo $type . " display-block"; } ?>"><?php if(!empty($message)) { echo $message; } ?></div>
@@ -107,14 +106,13 @@ require_once('vendor/SpreadsheetReader.php');
 
 if (isset($_POST["import"]))
 {?>
+
 <table class="tg">
   <tr>
     <th class="tg-0lax">srNo</th>
-    <th class="tg-0lax">paramId</th>
-    <th class="tg-0lax">prodId</th>
     <th class="tg-0lax">Product</th>
+    <th class="tg-0lax">Feature</th>
     <th class="tg-0lax">Value</th>
-    <th class="tg-0lax">qtyUomId</th>
   </tr>
 
 <?php
@@ -169,8 +167,6 @@ if (isset($_POST["import"]))
                         <td class="tg-0lax"><? echo $product; ?></td>
                         <td class="tg-0lax"><? echo 'Moisture'; ?></td>
                         <td class="tg-0lax"><? echo $Row[8]; ?></td>
-                        <td class="tg-0lax"><? echo $sr_no; ?></td>
-                        <td class="tg-0lax"><? echo $sr_no; ?></td>
                     </tr>
                     <?php 
                     $sr_no +=1;
@@ -191,8 +187,6 @@ if (isset($_POST["import"]))
                         <td class="tg-0lax"><? echo $product; ?></td>
                         <td class="tg-0lax"><? echo 'Oil As is %' ?></td>
                         <td class="tg-0lax"><? echo $Row[9]; ?></td>
-                        <td class="tg-0lax"><? echo $sr_no; ?></td>
-                        <td class="tg-0lax"><? echo $sr_no; ?></td>
                     </tr>
                     <?php 
                     $sr_no +=1;
@@ -200,7 +194,6 @@ if (isset($_POST["import"]))
              }
          }
          $saving_data .= ']';
-         print($saving_data);
 
         $url = 'http://train.enam.gov.in/NamWebSrv/rest/assaying/submitAssayingDtl';
         $data = array('key1' => 'value1', 'key2' => 'value2');
@@ -218,9 +211,17 @@ if (isset($_POST["import"]))
         // $result = json_encode($result);
         $result = json_decode($result, true);
         if($result['statusMsg'] == 'S'){
-            print('Success');
+            ?>
+            <div class="alert alert-success">
+                <strong>Success!</strong> Data is uploaded <a href="#" class="alert-link">Successfully</a>.
+            </div>
+            <?
         }else{
-            print('Failure');
+            ?>
+            <div class="alert alert-danger">
+                <strong>Failure!</strong> <a href="#" class="alert-link">Data was not uploaded</a>.
+              </div>
+              <?
         }
   }
   else
@@ -240,13 +241,27 @@ $data_array = http_build_query($data_array,'','&');
 $data_array .= '[{srNo'.$sr.'';
 ?>
 </table>
-
+<button onclick="savedData()">Show Response</button>
+<div id='response-data' style="display: none;">
+    <?php print($saving_data); ?>
+</div>
     
 
 
 </body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 // document.getElementById('frmExcelImport').addEventListener('submit', test, false                     )
+function savedData() {
+  var x = document.getElementById("response-data");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
 
 function test(e){
     e.preventDefault();
@@ -264,7 +279,7 @@ function test(e){
     fetch(url, {
       method: 'POST', // or 'PUT'
       body: toUrlEncoded(data), // data can be `string` or {object}!
-      headers:{;
+      headers:{
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then(res => res.json())
@@ -278,9 +293,9 @@ function test(e){
     .catch(error => console.error('Error:', error));
 }
 
-function getData() {
-    fetch('')
-}
+// function getData() {
+//     fetch('')
+// }
 
 
 
