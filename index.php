@@ -91,9 +91,13 @@ error_reporting(0);
                 <button type="submit" name="import" class="btn-submit">Upload to ENAM</button>
         
             </div>
+            <input type="text" name="groundnut" id="groundnut">
+            <input type="text" name="soyabeans" id="soyabeans">
+            <input type="text" name="wheat" id="wheat">
+            <input type="text" name="mustard" id="mustard">
         
         </form>
-        <!-- <button onclick="test()">request data</button> -->
+        <!-- <button onclick="load_lot_id()">request data</button> -->
         
     </div>
     <div id="response" class="<?php if(!empty($type)) { echo $type . " display-block"; } ?>"><?php if(!empty($message)) { echo $message; } ?></div>
@@ -131,16 +135,19 @@ if (isset($_POST["import"]))
             'password'=>'PASSWORD',
             'orgId'=>'1',
             'oprId'=>'163',
-            'lotId'=>'492017111332',
             'sampleId'=>'1'
         );
         $saving_data = http_build_query($saving_data,'','&');
+        $saving_data_groundnut = $saving_data . '&lotId=['.$_POST['groundnut'].']&dtlList=[';
+        $saving_data_soyabeans = $saving_data . '&lotId=['.$_POST['soyabeans'].']&dtlList=[';
+        $saving_data_wheat = $saving_data . '&lotId=['.$_POST['wheat'].']&dtlList=[';
+        $saving_data_mustard = $saving_data . '&lotId=['.$_POST['mustard'].']&dtlList=[';
         
         $sheetCount = count($Reader->sheets());
-        $saving_data .= '&dtlList=[';
         $sr_no = 0;
         for($i=0;$i<$sheetCount;$i++)
         {
+            print_r($_POST);
             // [{srNo:1,paramId:2016120011490000128,qtyUomId:2016040220980000001,prodId:2016040291220000007,type:N,nValue:5,maxVal:5.00,minVal:0.00}]
 
             
@@ -150,7 +157,7 @@ if (isset($_POST["import"]))
                 // for Moisture
           
                 $name = "";
-                if(isset($Row[8])) {
+                if(isset($Row[8])) {//for moisture
                     $product = strtoupper($Row[2]);
 
                     if(strtoupper($Row[2]) == 'MUSTARDS'){
@@ -159,6 +166,10 @@ if (isset($_POST["import"]))
                         
                     }elseif (strtolower($Row[2]) == 'soybeans') {
                             $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016110011490000067","qtyUomId":"2016070011220000103","prodId":"2016080011220000021","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
+                    }elseif (strtolower($Row[2]) == 'wheat') {
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2018110011490000798","qtyUomId":"2016070011220000103","prodId":"2016040011220000053","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
+                    }elseif (strtolower($Row[2]) == 'groundnut') {
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016110011490000077","qtyUomId":"2016110011490000077","prodId":"2016070011220000005","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
                     }
 
                     ?>
@@ -171,7 +182,7 @@ if (isset($_POST["import"]))
                     <?php 
                     $sr_no +=1;
                 }
-                if(isset($Row[8])) {
+                if(isset($Row[9])) {
                     $product = strtoupper($Row[2]);
 
                     if(strtoupper($Row[2]) == 'MUSTARDS'){
@@ -179,6 +190,13 @@ if (isset($_POST["import"]))
                         
                     }elseif (strtolower($Row[2]) == 'soybeans') {
                             $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016110011490000073","qtyUomId":"2016070011220000103","prodId":"2016080011220000021","type":"N","nValue":"'.$Row[8].'","maxVal":"50.00","minVal":"15.00"},';
+                    }
+                    //no oil param for wheat
+                    // elseif (strtolower($Row[2]) == 'wheat') {
+                    //         $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2018110011490000798","qtyUomId":"2016070011220000103","prodId":"2016040011220000053","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
+                    // }
+                    elseif (strtolower($Row[2]) == 'groundnut') {
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2018080011490000002","qtyUomId":"2016110011490000077","prodId":"2016070011220000005","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
                     }
 
                     ?>
@@ -191,12 +209,38 @@ if (isset($_POST["import"]))
                     <?php 
                     $sr_no +=1;
                 }
+                if(isset($Row[10])) {//for protien
+                    $product = strtoupper($Row[2]);
+
+                    // if(strtoupper($Row[2]) == 'MUSTARDS'){
+                    //     // $name = mysqli_real_escape_string($conn,$Row[0]);
+                    //         $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016070011490000073","qtyUomId":"2016070011220000103","prodId":"2016070011220000103","type":"N","nValue":"'.$Row[8].'","maxVal":"7.50","minVal":"0.00"},';
+                        
+                    // }elseif (strtolower($Row[2]) == 'soybeans') {
+                    //         $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016110011490000067","qtyUomId":"2016070011220000103","prodId":"2016080011220000021","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
+                    // }
+                    if (strtolower($Row[2]) == 'wheat') {
+                            $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2018110011490000804","qtyUomId":"2016070011220000103","prodId":"2016040011220000053","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
+                    }
+                    // elseif (strtolower($Row[2]) == 'groundnut') {
+                    //         $saving_data .= '{"srNo":'.$sr_no.',"paramId":"2016110011490000077","qtyUomId":"2016110011490000077","prodId":"2016070011220000005","type":"N","nValue":"'.$Row[8].'","maxVal":"12.00","minVal":"0.00"},';
+                    // }
+
+                    ?>
+                    <tr>
+                        <td class="tg-0lax"><? echo $sr_no; ?></td>
+                        <td class="tg-0lax"><? echo $product; ?></td>
+                        <td class="tg-0lax"><? echo 'Moisture'; ?></td>
+                        <td class="tg-0lax"><? echo $Row[8]; ?></td>
+                    </tr>
+                    <?php 
+                    $sr_no +=1;
+                }
              }
          }
          $saving_data .= ']';
 
         $url = 'http://train.enam.gov.in/NamWebSrv/rest/assaying/submitAssayingDtl';
-        $data = array('key1' => 'value1', 'key2' => 'value2');
 
         // use key 'http' even if you send the request to https://...
         $options = array(
@@ -263,9 +307,9 @@ function savedData() {
   }
 }
 
-function test(e){
-    e.preventDefault();
-    var url = 'http://train.enam.gov.in/NamWebSrv/rest/assaying/getSampleAssayingLots';
+function load_lot_id(e){
+    // e.preventDefault();
+    var url = 'https://train.enam.gov.in/NamWebSrv/rest/assaying/getSampleAssayingLots';
     var data = {
             loginId:'RJ2024N00001',
             password:'PASSWORD',
@@ -284,15 +328,31 @@ function test(e){
       }
     }).then(res => res.json())
     .then(function(response){
-        console.log('Success:', (response))
             var resp = (response);
-            console.log(resp['statusMsg']);
-            document.getElementById('frmExcelImport').submit();
+            console.log(resp['sampleList']);
+            for (i = 0; i < resp['sampleList'].length; i++) { 
+              if(resp['sampleList'][i]['commodityId'] == "2017100011220000050"){
+                document.getElementById('groundnut').value = resp['sampleList'][i]['lotId'];
+              }
+              if(resp['sampleList'][i]['commodityId'] == "2016080011220000021"){
+                document.getElementById('soyabeans').value = resp['sampleList'][i]['lotId'];
+              }
+              if(resp['sampleList'][i]['commodityId'] == "2016040011220000053"){
+                document.getElementById('wheat').value = resp['sampleList'][i]['lotId'];
+              }
+              if(resp['sampleList'][i]['commodityId'] == "2016070011220000103"){
+                document.getElementById('mustard').value = resp['sampleList'][i]['lotId'];
+              }
+
+            }
+            // document.getElementById('frmExcelImport').submit();
     } 
         )
     .catch(error => console.error('Error:', error));
 }
 
+
+load_lot_id();
 // function getData() {
 //     fetch('')
 // }
